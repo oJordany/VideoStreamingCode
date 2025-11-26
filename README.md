@@ -94,7 +94,7 @@ python Server.py <server_port>
 
 Aqui está a seção que faltava, formatada como bloco de código Markdown, incluindo os exemplos `bash`:
 
-````markdown
+````
 ```bash
 python Server.py <server_port>
 ````
