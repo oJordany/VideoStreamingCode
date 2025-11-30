@@ -34,8 +34,9 @@ class ServerWorker:
 		while True:            
 			data = connSocket.recv(256)
 			if data:
-				print( "Data received:\n" + data)
-				self.processRtspRequest(data)
+				data_str = data.decode("utf-8")
+				print( "Data received:\n" + data_str)
+				self.processRtspRequest(data_str)
 	
 	def processRtspRequest(self, data):
 		"""Process RTSP request sent from the client."""
@@ -69,7 +70,13 @@ class ServerWorker:
 				self.replyRtsp(self.OK_200, seq[1])
 				
 				# Get the RTP/UDP port from the last line
-				self.clientInfo['rtpPort'] = request[2].split(' ')[3]
+				try:
+					transport_line = request[2]
+					# Pega o que está depois de "client_port="
+					self.clientInfo['rtpPort'] = transport_line.split('client_port=')[1]
+				except:
+					print("Erro ao ler porta RTP. Usando padrão 5000.")
+					self.clientInfo['rtpPort'] = "5000"
 		
 		# Process PLAY request 		
 		elif requestType == self.PLAY:
@@ -201,7 +208,7 @@ class ServerWorker:
 			#print( "200 OK")
 			reply = 'RTSP/1.0 200 OK\nCSeq: ' + seq + '\nSession: ' + str(self.clientInfo['session'])
 			connSocket = self.clientInfo['rtspSocket'][0]
-			connSocket.send(reply)
+			connSocket.send(reply.encode("utf-8"))
 		
 		# Error messages
 		elif code == self.FILE_NOT_FOUND_404:

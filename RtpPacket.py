@@ -28,7 +28,7 @@ class RtpPacket:
 		header[1] = (marker << 7) | pt
 		# Bytes 2 e 3: Sequence Number (16 bits)
 		# Sequência de pacotes (número do quadro)
-		header[2] = seqnum >> 8  # 8 bits mais significativos
+		header[2] = seqnum >> 8 & 0xFF # 8 bits mais significativos
 		header[3] = seqnum & 0xFF  # 8 bits menos significativos
 		# Bytes 4 a 7: Timestamp (32 bits)
 		# Marca de tempo para o quadro de vídeo
